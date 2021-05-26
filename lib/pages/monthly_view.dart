@@ -5,6 +5,7 @@ import '../utils.dart';
 import '../widgets/bottom_navigation_bar.dart';
 
 class MonthlyViewCalendar extends StatefulWidget {
+  static const routeName = '/monthly-view';
   @override
   _MonthlyViewCalendarState createState() => _MonthlyViewCalendarState();
 }

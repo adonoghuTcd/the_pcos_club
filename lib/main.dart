@@ -1,49 +1,70 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:pcos_club/auth/authFirebase.dart';
+import 'package:provider/provider.dart';
 
 import 'pages/monthly_view.dart';
+import 'pages/authentication.dart';
+import 'pages/settings.dart';
 
 import 'widgets/bottom_navigation_bar.dart';
+import 'utils/colours.dart';
 
 void main() {
   initializeDateFormatting().then((_) => runApp(MyApp()));
 }
 
-Map<int, Color> color ={50:Color.fromRGBO(136,14,79, .1),
-  100:Color.fromRGBO(243, 93, 109, .2),
-  200:Color.fromRGBO(243, 93, 109, .3),
-  300:Color.fromRGBO(243, 93, 109, .4),
-  400:Color.fromRGBO(243, 93, 109, .5),
-  500:Color.fromRGBO(243, 93, 109, .6),
-  600:Color.fromRGBO(243, 93, 109, .7),
-  700:Color.fromRGBO(243, 93, 109, .8),
-  800:Color.fromRGBO(243, 93, 109, .9),
-  900:Color.fromRGBO(243, 93, 109, 1),};
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'TableCalendar Example',
-      theme: ThemeData(
-        primarySwatch: MaterialColor(0xFFF35D6D, color)
+
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Authentication()
+        )
+      ],
+      child: MaterialApp(
+        title: 'The PCOS Club',
+        theme: ThemeData(
+          primarySwatch: CustomColour.primary()
+        ),
+        // initialRoute:
+        routes: {
+          HomePage.routeName: (context) => HomePage(),
+          MonthlyViewCalendar.routeName: (context) => MonthlyViewCalendar(),
+          SettingsScreen.routeName: (context) => SettingsScreen()
+        },
+        home: AuthenticationPage(),
       ),
-      home: StartPage(),
     );
   }
 }
 
-class StartPage extends StatefulWidget {
+class HomePage extends StatefulWidget {
+  static const routeName = '/';
   @override
-  _StartPageState createState() => _StartPageState();
+  _HomePageState createState() => _HomePageState();
 }
 
-class _StartPageState extends State<StartPage> {
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('The Pcos Club'),
+        title: Text('The PCOS Club'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(0.0, 0.0, 8.0, 0.0),
+            child: IconButton(
+              icon: const Icon(Icons.save, size: 30.0),
+              onPressed: () {
+                Navigator.of(context).pushNamed(SettingsScreen.routeName);
+              },
+            ),
+          ),
+        ],
       ),
       body: MonthlyViewCalendar(),
       bottomNavigationBar: NavigationBar()

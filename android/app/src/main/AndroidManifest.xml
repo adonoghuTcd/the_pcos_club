@@ -2,7 +2,7 @@
     package="com.pcos_club">
    <application
         android:label="pcos_club"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/pcos_logo_ic">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
