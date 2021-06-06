@@ -4,25 +4,21 @@ import 'package:pcos_club/models/user.dart';
 import '../main.dart';
 import '../auth/authFirebase.dart';
 
-class GoogleSignInButton extends StatefulWidget {
-  @override
-  _GoogleSignInButtonState createState() => _GoogleSignInButtonState();
-}
-
-class _GoogleSignInButtonState extends State<GoogleSignInButton> {
-  bool _isSigningIn = false;
-
-   bool get isSigningIn => _isSigningIn;
+class GoogleSignInButton extends StatelessWidget {
+  final Function onPressedHandler;
+  GoogleSignInButton({
+   required this.onPressedHandler
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 16.0),
-      child: _isSigningIn
+      child:/* _isSigningIn
           ? CircularProgressIndicator(
         valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
       )
-          : OutlinedButton(
+          :*/ OutlinedButton(
         style: ButtonStyle(
           backgroundColor: MaterialStateProperty.all(Colors.white),
           shape: MaterialStateProperty.all(
@@ -31,29 +27,18 @@ class _GoogleSignInButtonState extends State<GoogleSignInButton> {
             ),
           ),
         ),
-        onPressed: () async {
-          setState(() {
-            _isSigningIn = true;
-          });
+        onPressed: () => this.onPressedHandler()
+          // await Authentication.signInWithGoogle(context: context);
 
-          await Authentication.signInWithGoogle(context: context);
-
-          setState(() {
-            _isSigningIn = false;
-          });
-
-          if (user != null) {
-            Navigator.of(context).pushReplacement(
-              MaterialPageRoute(
-                builder: (context) => HomePage(),
-              ),
-            );
-          }
-
-          setState(() {
-            _isSigningIn = false;
-          });
-        },
+          // if (user != null) {
+          //   Navigator.of(context).pushReplacement(
+          //     MaterialPageRoute(
+          //       builder: (context) => HomePage(),
+          //     ),
+          //   );
+          // }
+         // }
+        ,
         child: Padding(
           padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
           child: Row(

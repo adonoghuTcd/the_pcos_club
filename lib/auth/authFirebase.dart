@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 import 'dart:async';
 
 import './authService.dart';
-import '../main.dart';
+// import '../main.dart';
 import '../models/user.dart';
 import '../utils/snackbar.dart';
 
@@ -19,16 +19,28 @@ class Authentication extends ChangeNotifier implements AuthService {
 
   static Future<FirebaseApp> initializeFirebase() async {
     FirebaseApp firebaseApp = await Firebase.initializeApp();
-    // User? user = FirebaseAuth.instance.currentUser;
 
-    // if (user != null) {
-    //   Navigator.of(context).pushReplacementNamed(HomePage.routeName);
-    // }
     return firebaseApp;
   }
 
+  bool isAuthenticated() {
+    User? user = FirebaseAuth.instance.currentUser;
 
-  Future<void> signInWithGoogle({required BuildContext context}) async {
+    if (user != null) {
+      return true;
+    }
+    return false;
+  }
+
+  void _firebaseUserToUser(User user) {
+    _userModel = UserModel(
+        uid: user.uid,
+        displayName: user.displayName ?? '',
+        photoUrl: user.photoURL ?? '',
+        email: user.email ?? '');
+  }
+
+  Future<void> signInWithGoogle() async {
     FirebaseAuth auth = FirebaseAuth.instance;
     User? user;
     if (kIsWeb) {
@@ -36,9 +48,11 @@ class Authentication extends ChangeNotifier implements AuthService {
 
       try {
         final UserCredential userCredential =
-        await auth.signInWithPopup(authProvider);
+            await auth.signInWithPopup(authProvider);
 
         user = userCredential.user;
+        _firebaseUserToUser(user!);
+
         notifyListeners();
       } catch (e) {
         print(e);
@@ -47,11 +61,11 @@ class Authentication extends ChangeNotifier implements AuthService {
       final GoogleSignIn googleSignIn = GoogleSignIn();
 
       final GoogleSignInAccount? googleSignInAccount =
-      await googleSignIn.signIn();
+          await googleSignIn.signIn();
 
       if (googleSignInAccount != null) {
         final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount.authentication;
+            await googleSignInAccount.authentication;
 
         final AuthCredential credential = GoogleAuthProvider.credential(
           accessToken: googleSignInAuthentication.accessToken,
@@ -60,38 +74,21 @@ class Authentication extends ChangeNotifier implements AuthService {
 
         try {
           final UserCredential userCredential =
-          await auth.signInWithCredential(credential);
+              await auth.signInWithCredential(credential);
 
           user = userCredential.user;
+          _firebaseUserToUser(user!);
           notifyListeners();
         } on FirebaseAuthException catch (e) {
-          if (e.code == 'account-exists-with-different-credential') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.customSnackBar(
-                content:
-                'The account already exists with a different credential.',
-              ),
-            );
-          } else if (e.code == 'invalid-credential') {
-            ScaffoldMessenger.of(context).showSnackBar(
-              CustomSnackBar.customSnackBar(
-                content:
-                'Error occurred while accessing credentials. Try again.',
-              ),
-            );
-          }
+          throw Future.error(e.code);
         } catch (e) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            CustomSnackBar.customSnackBar(
-              content: 'Error occurred using Google Sign-In. Try again.',
-            ),
-          );
+          throw Future.error(e);
         }
       }
     }
   }
 
-   Future<void> signOut({required BuildContext context}) async {
+  Future<void> signOut() async {
     final GoogleSignIn googleSignIn = GoogleSignIn();
 
     try {
@@ -100,15 +97,13 @@ class Authentication extends ChangeNotifier implements AuthService {
       }
       await FirebaseAuth.instance.signOut();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        CustomSnackBar.customSnackBar(
-          content: 'Error signing out. Try again.',
-        ),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   CustomSnackBar.customSnackBar(
+      //     content: 'Error signing out. Try again.',
+      //   ),
+      // );
     }
   }
-
-
 
   // noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }

@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 abstract class AuthService {
 
-  Future<void> signInWithGoogle({required BuildContext context});
+  bool isAuthenticated();
+  Future<void> signInWithGoogle();
   // Future<User> signInWithApple();
-  Future<void> signOut({required BuildContext context});
+  Future<void> signOut();
   // Stream<User> get onAuthStateChanged;
 }

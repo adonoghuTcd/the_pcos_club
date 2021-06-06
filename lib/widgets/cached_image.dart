@@ -1,0 +1,29 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/material.dart';
+import '../utils/constant.dart';
+
+class CircularImage extends StatelessWidget {
+  const CircularImage(
+      {this.path = Constants.dummyProfilePic, this.height = 50, this.isBorder = false})
+      : super();
+  final String path;
+  final double height;
+  final bool isBorder;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        border:
+        Border.all(color: Colors.grey.shade100, width: isBorder ? 2 : 0),
+      ),
+      child: CircleAvatar(
+        maxRadius: height / 2,
+        backgroundColor: Theme.of(context).cardColor,
+        backgroundImage:
+        CachedNetworkImageProvider(path),
+      ),
+    );
+  }
+}

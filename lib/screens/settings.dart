@@ -1,6 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:settings_ui/settings_ui.dart';
 
+import 'package:pcos_club/auth/authFirebase.dart';
+import 'package:settings_ui/settings_ui.dart';
+import 'package:provider/provider.dart';
+import '../widgets/cached_image.dart';
 
 class SettingsScreen extends StatefulWidget {
   static const routeName = '/settings';
@@ -16,8 +20,25 @@ class _SettingsState extends State<SettingsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text('Settings UI')),
-      body: buildSettingsList(),
+      body: SafeArea
     );
+  }
+  Widget userProfile() {
+    Container(
+      height: 56,
+      width: 56,
+      margin: EdgeInsets.only(left: 17, top: 10),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.white, width: 2),
+        borderRadius: BorderRadius.circular(28),
+        image: DecorationImage(
+          image: CircularImage(
+            userModel.profilePic,
+          ),
+          fit: BoxFit.cover,
+        ),
+      ),
+    ),
   }
 
   Widget buildSettingsList() {
@@ -48,7 +69,13 @@ class _SettingsState extends State<SettingsScreen> {
           tiles: [
             SettingsTile(title: 'Phon  e number', leading: Icon(Icons.phone)),
             SettingsTile(title: 'Email', leading: Icon(Icons.email)),
-            SettingsTile(title: 'Sign out', leading: Icon(Icons.exit_to_app)),
+            SettingsTile(title: 'Sign out', leading: Icon(Icons.exit_to_app),
+              onPressed: (ctx) {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushReplacementNamed('/authentication');
+                  Provider.of<Authentication>(context, listen: false).signOut();
+              } ,
+            ),
           ],
         ),
         SettingsSection(

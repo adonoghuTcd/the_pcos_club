@@ -97,13 +97,14 @@ class _MonthlyViewCalendarState extends State<MonthlyViewCalendar> {
           eventLoader: _getEventsForDay,
           startingDayOfWeek: StartingDayOfWeek.monday,
           headerVisible: true,
+          availableGestures: AvailableGestures.all,
           availableCalendarFormats: const {
               CalendarFormat.month: 'Month',
               CalendarFormat.week: 'Week',
             },
           calendarStyle: CalendarStyle(
             // Use `CalendarStyle` to customize the UI
-            outsideDaysVisible: false,
+            outsideDaysVisible: true,
           ),
           onDaySelected: _onDaySelected,
           // onRangeSelected: _onRangeSelected,
@@ -119,32 +120,32 @@ class _MonthlyViewCalendarState extends State<MonthlyViewCalendar> {
           },
         ),
         const SizedBox(height: 100.0),
-        Expanded(
-          child: ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, value, _) {
-              return ListView.builder(
-                itemCount: value.length,
-                itemBuilder: (context, index) {
-                  return Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      border: Border.all(),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: ListTile(
-                      onTap: () => print('${value[index]}'),
-                      title: Text('${value[index]}'),
-                    ),
-                  );
-                },
-              );
-            },
-          ),
-        ),
+        // Expanded(
+        //   child: ValueListenableBuilder<List<Event>>(
+        //     valueListenable: _selectedEvents,
+        //     builder: (context, value, _) {
+        //       return ListView.builder(
+        //         itemCount: value.length,
+        //         itemBuilder: (context, index) {
+        //           return Container(
+        //             margin: const EdgeInsets.symmetric(
+        //               horizontal: 12.0,
+        //               vertical: 4.0,
+        //             ),
+        //             decoration: BoxDecoration(
+        //               border: Border.all(),
+        //               borderRadius: BorderRadius.circular(12.0),
+        //             ),
+        //             child: ListTile(
+        //               onTap: () => print('${value[index]}'),
+        //               title: Text('${value[index]}'),
+        //             ),
+        //           );
+        //         },
+        //       );
+        //     },
+        //   ),
+        // ),
       ],
     );
   }
